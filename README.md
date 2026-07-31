@@ -24,7 +24,7 @@ The implementation will be developed incrementally:
 
 ## Conventions
 
-The following conventions will initially be used:
+The following conventions are currently used:
 
 - quaternion format: `[q0, q1, q2, q3]`;
 - scalar component first;
@@ -34,7 +34,8 @@ The following conventions will initially be used:
 - right-handed coordinate systems;
 - SI units.
 
-These conventions may be refined as the mathematical model is developed.
+These conventions must remain explicit and consistent throughout the project.
+Any change must be documented and propagated to the implementation and tests.
 
 ## Physical model
 
@@ -62,6 +63,19 @@ The first milestone is limited to:
 - defining what a quaternion is;
 - implementing quaternion normalization;
 - testing the implementation using manually verified examples.
+
+## Progress
+
+### Quaternion foundations
+
+- [x] Define the quaternion storage convention.
+- [x] Implement quaternion normalization.
+- [x] Reject invalid quaternion shapes.
+- [x] Reject the zero quaternion.
+- [x] Verify that normalization does not modify the input.
+- [x] Add unit tests for quaternion normalization.
+- [ ] Implement quaternion conjugation.
+- [ ] Implement the Hamilton product.
 
 ## Development principles
 
