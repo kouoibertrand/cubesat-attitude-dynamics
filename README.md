@@ -70,12 +70,12 @@ The first milestone is limited to:
 
 - [x] Define the quaternion storage convention.
 - [x] Implement quaternion normalization.
-- [x] Reject invalid quaternion shapes.
-- [x] Reject the zero quaternion.
-- [x] Verify that normalization does not modify the input.
-- [x] Add unit tests for quaternion normalization.
-- [ ] Implement quaternion conjugation.
-- [ ] Implement the Hamilton product.
+- [x] Implement quaternion conjugation.
+- [x] Implement the Hamilton product.
+- [x] Test identity, associativity, non-commutativity, and conjugation properties.
+- [ ] Implement quaternion inversion.
+- [ ] Represent rotations with unit quaternions.
+- [ ] Rotate three-dimensional vectors.
 
 ## Development principles
 

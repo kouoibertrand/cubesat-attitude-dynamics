@@ -4,6 +4,7 @@ import pytest
 from cubesat_attitude.quaternion import (
     conjugate_quaternion,
     hamilton_product,
+    inverse_quaternion,
     normalize_quaternion,
 )
 
@@ -34,21 +35,21 @@ def test_normalized_quaternion_has_unit_norm() -> None:
     np.testing.assert_allclose(np.linalg.norm(result), 1.0)
 
 
-def test_zero_quaternion_is_rejected() -> None:
+def test_normalize_rejects_zero_quaternion() -> None:
     q = np.zeros(4)
 
     with pytest.raises(ValueError):
         normalize_quaternion(q)
 
 
-def test_invalid_shape_is_rejected() -> None:
+def test_normalize_rejects_invalid_shape() -> None:
     q = np.array([1.0, 0.0, 0.0])
 
     with pytest.raises(ValueError):
         normalize_quaternion(q)
 
 
-def test_input_is_not_modified() -> None:
+def test_normalize_does_not_modify_input() -> None:
     q = np.array([1.0, 2.0, 2.0, 0.0])
     q_before = q.copy()
 
@@ -203,3 +204,56 @@ def test_hamilton_product_raises_value_error_for_invalid_second_shape() -> None:
 
     with pytest.raises(ValueError):
         hamilton_product(q1, q2)
+
+
+def test_inverse_quaternion_known_result() -> None:
+    q = np.array([1.0, 2.0, 0.0, 0.0])
+
+    result = inverse_quaternion(q)
+
+    expected = np.array([0.2, -0.4, 0.0, 0.0])
+    np.testing.assert_allclose(result, expected)
+
+
+def test_inverse_quaternion_is_multiplicative_inverse() -> None:
+    q = np.array([1.0, 2.0, 3.0, 4.0])
+    q_inverse = inverse_quaternion(q)
+
+    left_result = hamilton_product(q, q_inverse)
+    right_result = hamilton_product(q_inverse, q)
+
+    identity = np.array([1.0, 0.0, 0.0, 0.0])
+
+    np.testing.assert_allclose(left_result, identity, atol=1e-12)
+    np.testing.assert_allclose(right_result, identity, atol=1e-12)
+
+
+def test_inverse_of_unit_quaternion_equals_conjugate() -> None:
+    q = np.array([0.5, 0.5, 0.5, 0.5])
+    q_inverse = inverse_quaternion(q)
+    q_conjugate = conjugate_quaternion(q)
+
+    np.testing.assert_allclose(q_inverse, q_conjugate)
+
+
+def test_inverse_quaternion_does_not_modify_input() -> None:
+    q = np.array([1.0, 2.0, 3.0, 4.0])
+    q_before = q.copy()
+
+    inverse_quaternion(q)
+
+    np.testing.assert_array_equal(q, q_before)
+
+
+def test_inverse_quaternion_raises_value_error_for_zero_quaternion() -> None:
+    q = np.zeros(4)
+
+    with pytest.raises(ValueError):
+        inverse_quaternion(q)
+
+
+def test_inverse_quaternion_raises_value_error_for_invalid_shape() -> None:
+    q = np.array([1.0, 0.0, 0.0])
+
+    with pytest.raises(ValueError):
+        inverse_quaternion(q)

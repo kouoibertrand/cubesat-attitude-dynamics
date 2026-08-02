@@ -103,3 +103,35 @@ def hamilton_product(
         ],
         dtype=np.float64,
     )
+
+
+def inverse_quaternion(q: ArrayLike) -> NDArray[np.float64]:
+    """Return the inverse of a quaternion.
+
+    Parameters
+    ----------
+    q:
+        Quaternion stored as [q0, q1, q2, q3], with the scalar component first.
+
+    Returns
+    -------
+    numpy.ndarray
+        Inverse quaternion of shape (4,).
+
+    Raises
+    ------
+    ValueError
+        If the input does not contain exactly four components or if its norm 
+        is zero.
+    """
+    q_array = np.asarray(q, dtype=float)
+
+    if q_array.shape != (4,):
+        raise ValueError("A quaternion must have shape (4,).")
+
+    norm_squared = np.linalg.norm(q_array) ** 2
+    if norm_squared == 0:
+        raise ValueError("Cannot invert a quaternion with zero norm.")
+
+    q_conjugate = conjugate_quaternion(q_array)
+    return q_conjugate / norm_squared
