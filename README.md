@@ -7,7 +7,11 @@ rigid CubeSat.
 
 The project is being rebuilt progressively from first principles.
 
-No complete attitude simulation has been implemented yet.
+Quaternion algebra, vector rotations, and quaternion kinematics are currently
+implemented and covered by unit tests.
+
+Rigid-body rotational dynamics and numerical time integration have not yet
+been implemented.
 
 ## Initial objective
 
@@ -66,16 +70,41 @@ The first milestone is limited to:
 
 ## Progress
 
-### Quaternion foundations
+## Progress
+
+### Quaternion algebra
 
 - [x] Define the quaternion storage convention.
 - [x] Implement quaternion normalization.
 - [x] Implement quaternion conjugation.
 - [x] Implement the Hamilton product.
-- [x] Test identity, associativity, non-commutativity, and conjugation properties.
-- [ ] Implement quaternion inversion.
-- [ ] Represent rotations with unit quaternions.
-- [ ] Rotate three-dimensional vectors.
+- [x] Implement quaternion inversion.
+- [x] Validate identity, associativity, non-commutativity, norm, and conjugation
+      properties.
+
+### Attitude representation and kinematics
+
+- [x] Represent rotations with quaternions.
+- [x] Rotate three-dimensional vectors.
+- [x] Verify invariance under quaternion sign and scaling.
+- [x] Verify quaternion rotation composition order.
+- [x] Implement the quaternion derivative from body-frame angular velocity.
+- [x] Verify quaternion-derivative tangency and norm properties.
+
+### Rigid-body dynamics
+
+- [ ] Define and validate the inertia matrix.
+- [ ] Implement Euler's rigid-body equation.
+- [ ] Validate principal-axis rotation.
+- [ ] Validate torque-free rotational motion.
+- [ ] Monitor rotational kinetic energy and angular momentum.
+
+### Numerical simulation
+
+- [ ] Define the complete rotational state.
+- [ ] Integrate angular velocity and attitude over time.
+- [ ] Monitor quaternion norm drift.
+- [ ] Compare numerical results with analytical cases.
 
 ## Development principles
 
