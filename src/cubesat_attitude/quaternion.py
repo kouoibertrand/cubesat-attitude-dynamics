@@ -135,3 +135,55 @@ def inverse_quaternion(q: ArrayLike) -> NDArray[np.float64]:
 
     q_conjugate = conjugate_quaternion(q_array)
     return q_conjugate / norm_squared
+
+
+def rotate_vector(
+    q: ArrayLike,
+    vector: ArrayLike,
+) -> NDArray[np.float64]:
+    """Rotate a body-frame vector into the inertial frame.
+
+    Parameters
+    ----------
+    q:
+        Body-to-inertial quaternion stored as [q0, q1, q2, q3],
+        with the scalar component first.
+    vector:
+        Vector expressed in the body frame, stored as [v_x, v_y, v_z].
+
+    Returns
+    -------
+    numpy.ndarray
+        The same physical vector expressed in the inertial frame,
+        with shape (3,).
+
+    Raises
+    ------
+    ValueError
+        If q does not have shape (4,), if vector does not have shape (3,),
+        or if q has zero norm.
+
+    Notes
+    -----
+    The rotation is computed as:
+
+        vector_inertial = q ⊗ vector_body ⊗ q_inverse
+    """
+    q_array = np.asarray(q, dtype=float)
+    vector_array = np.asarray(vector, dtype=float)
+
+    if q_array.shape != (4,):
+        raise ValueError("A quaternion must have shape (4,).")
+
+    if vector_array.shape != (3,):
+        raise ValueError("A vector must have shape (3,).")
+
+    vector_quaternion = np.array([0.0, *vector_array])
+    q_inverse = inverse_quaternion(q_array)
+
+    rotated_quaternion = hamilton_product(
+        hamilton_product(q_array, vector_quaternion),
+        q_inverse,
+    )
+
+    return rotated_quaternion[1:]
