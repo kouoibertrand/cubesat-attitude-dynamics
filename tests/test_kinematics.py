@@ -31,10 +31,10 @@ def test_quaternion_derivative_known_general_result() -> None:
     result = quaternion_derivative(q, omega_body)
 
     expected = np.array([-28.0, 1.0, 6.0, 2.0])
-    np.testing.assert_array_equal(result, expected)
+    np.testing.assert_allclose(result, expected)
 
 
-def test_quaternion_derivative_is_tangent_to_unit_sphere() -> None:
+def test_quaternion_derivative_is_tangent_for_unit_quaternion() -> None:
     q = np.array([0.5, 0.5, 0.5, 0.5])
     omega_body = np.array([1.0, 2.0, 3.0])
 
@@ -74,3 +74,15 @@ def test_quaternion_derivative_does_not_modify_inputs() -> None:
 
     np.testing.assert_array_equal(q, q_before)
     np.testing.assert_array_equal(omega_body, omega_before)
+
+
+def test_quaternion_derivative_norm_for_unit_quaternion() -> None:
+    q = np.array([0.5, 0.5, 0.5, 0.5])
+    omega_body = np.array([1.0, 2.0, 3.0])
+
+    q_dot = quaternion_derivative(q, omega_body)
+
+    np.testing.assert_allclose(
+        np.linalg.norm(q_dot),
+        0.5 * np.linalg.norm(omega_body),
+    )

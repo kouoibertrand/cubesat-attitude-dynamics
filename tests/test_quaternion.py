@@ -115,7 +115,7 @@ def test_hamilton_product_known_result() -> None:
     result = hamilton_product(q1, q2)
 
     expected = np.array([-60.0, 12.0, 30.0, 24.0])
-    np.testing.assert_array_equal(result, expected)
+    np.testing.assert_allclose(result, expected)
 
 
 def test_hamilton_product_with_identity() -> None:
@@ -135,6 +135,12 @@ def test_hamilton_product_is_not_commutative() -> None:
 
     result_12 = hamilton_product(q1, q2)
     result_21 = hamilton_product(q2, q1)
+
+    expected_12 = np.array([-60.0, 12.0, 30.0, 24.0])
+    expected_21 = np.array([-60.0, 20.0, 14.0, 32.0])
+
+    np.testing.assert_allclose(result_12, expected_12)
+    np.testing.assert_allclose(result_21, expected_21)
 
     assert not np.array_equal(result_12, result_21)
 
@@ -167,6 +173,19 @@ def test_hamilton_product_with_conjugate_returns_squared_norm() -> None:
     np.testing.assert_allclose(result, expected)
 
 
+def test_hamilton_product_norm_is_multiplicative() -> None:
+    q1 = np.array([1.0, 2.0, -3.0, 4.0])
+    q2 = np.array([-2.0, 1.0, 0.5, 3.0])
+
+    result = hamilton_product(q1, q2)
+
+    expected_norm = np.linalg.norm(q1) * np.linalg.norm(q2)
+    np.testing.assert_allclose(
+        np.linalg.norm(result),
+        expected_norm,
+    )
+
+
 def test_conjugate_hamilton_product_returns_squared_norm() -> None:
     q = np.array([1.0, 2.0, 3.0, 4.0])
     q_conjugate = conjugate_quaternion(q)
@@ -175,6 +194,22 @@ def test_conjugate_hamilton_product_returns_squared_norm() -> None:
 
     expected = np.array([np.linalg.norm(q) ** 2, 0.0, 0.0, 0.0])
     np.testing.assert_allclose(result, expected)
+
+
+def test_conjugate_of_product_reverses_order() -> None:
+    q1 = np.array([1.0, 2.0, 3.0, 4.0])
+    q2 = np.array([5.0, -1.0, 2.0, 0.5])
+
+    left = conjugate_quaternion(
+        hamilton_product(q1, q2)
+    )
+
+    right = hamilton_product(
+        conjugate_quaternion(q2),
+        conjugate_quaternion(q1),
+    )
+
+    np.testing.assert_allclose(left, right)
 
 
 def test_hamilton_product_does_not_modify_inputs() -> None:

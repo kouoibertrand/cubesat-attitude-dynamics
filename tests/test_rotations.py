@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from cubesat_attitude.quaternion import (
+    hamilton_product,
     inverse_quaternion,
     rotate_vector,
 )
@@ -133,3 +134,57 @@ def test_rotate_vector_does_not_modify_inputs() -> None:
 
     np.testing.assert_array_equal(q, q_before)
     np.testing.assert_array_equal(vector, vector_before)
+
+
+def test_composed_rotation_matches_sequential_rotations() -> None:
+    angle = np.pi / 2
+
+    qx = np.array(
+        [
+            np.cos(angle / 2),
+            np.sin(angle / 2),
+            0.0,
+            0.0,
+        ]
+    )
+
+    qz = np.array(
+        [
+            np.cos(angle / 2),
+            0.0,
+            0.0,
+            np.sin(angle / 2),
+        ]
+    )
+
+    vector = np.array([0.0, 1.0, 0.0])
+
+    sequential_result = rotate_vector(
+        qz,
+        rotate_vector(qx, vector),
+    )
+
+    composed_quaternion = hamilton_product(qz, qx)
+    composed_result = rotate_vector(composed_quaternion, vector)
+
+    expected = np.array([0.0, 0.0, 1.0])
+
+    np.testing.assert_allclose(
+        sequential_result,
+        expected,
+        atol=1e-12,
+    )
+    np.testing.assert_allclose(
+        composed_result,
+        expected,
+        atol=1e-12,
+    )
+
+    wrong_order_quaternion = hamilton_product(qx, qz)
+    wrong_order_result = rotate_vector(wrong_order_quaternion, vector)
+
+    assert not np.allclose(
+        wrong_order_result,
+        expected,
+        atol=1e-12,
+    )
