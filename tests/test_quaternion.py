@@ -200,9 +200,7 @@ def test_conjugate_of_product_reverses_order() -> None:
     q1 = np.array([1.0, 2.0, 3.0, 4.0])
     q2 = np.array([5.0, -1.0, 2.0, 0.5])
 
-    left = conjugate_quaternion(
-        hamilton_product(q1, q2)
-    )
+    left = conjugate_quaternion(hamilton_product(q1, q2))
 
     right = hamilton_product(
         conjugate_quaternion(q2),

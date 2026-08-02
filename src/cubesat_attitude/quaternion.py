@@ -31,8 +31,9 @@ def normalize_quaternion(q: ArrayLike) -> NDArray[np.float64]:
     norm = np.linalg.norm(q_array)
     if norm == 0:
         raise ValueError("Cannot normalize a quaternion with zero norm.")
-    
+
     return q_array / norm
+
 
 def conjugate_quaternion(q: ArrayLike) -> NDArray[np.float64]:
     """Return the conjugate of a quaternion.
@@ -57,7 +58,7 @@ def conjugate_quaternion(q: ArrayLike) -> NDArray[np.float64]:
 
     if q_array.shape != (4,):
         raise ValueError("A quaternion must have shape (4,).")
-    
+
     return np.array([q_array[0], -q_array[1], -q_array[2], -q_array[3]])
 
 
@@ -73,7 +74,7 @@ def hamilton_product(
         First quaternion stored as [q0, q1, q2, q3], with the scalar component first.
     q2:
         Second quaternion stored as [q0, q1, q2, q3], with the scalar component first.
-    
+
     Returns
     -------
     numpy.ndarray
@@ -121,7 +122,7 @@ def inverse_quaternion(q: ArrayLike) -> NDArray[np.float64]:
     Raises
     ------
     ValueError
-        If the input does not contain exactly four components or if its norm 
+        If the input does not contain exactly four components or if its norm
         is zero.
     """
     q_array = np.asarray(q, dtype=float)
@@ -147,7 +148,8 @@ def rotate_vector(
     ----------
     q:
         Body-to-inertial quaternion stored as [q0, q1, q2, q3],
-        with the scalar component first.
+        with the scalar component first. The quaternion does not need to be normalized; any nonzero scalar multiple
+        represents the same rotation.
     vector:
         Vector expressed in the body frame, stored as [v_x, v_y, v_z].
 

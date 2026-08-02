@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-from cubesat_attitude.quaternion import (
+from .quaternion import (
     hamilton_product,
 )
 
